@@ -80,5 +80,21 @@ test('valid patch', () => {
     .then(rjson => {
         // visualizzo json su terminale
         console.log(rjson);
+    });
+});
+    
+// test case invalid patch
+test('invalid patch', () => {
+    expect.assertions(1);
+    return fetch(url+'/games/'+id, {            method: 'PATCH',
+         // passo un valore di ladro oltre il 10
+        body: JSON.stringify({ladro: 20}),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })
-})
+    .then(r => {
+        //mi aspetto di ricevere 400
+        expect(r.status).toEqual(400);
+    });
+});
