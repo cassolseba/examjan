@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 
 const url = 'http://localhost:3000';
 
+var id;
 
 // test case valid post
 test('valid post', () => {
@@ -16,8 +17,18 @@ test('valid post', () => {
                 'Content-Type': 'application/json',
             },
     })
-    // mi aspetto di ricevere 201 come status
-    .then(r => expect(r.status).toEqual(201));
+    .then(r => {
+        // mi aspetto di ricevere 201 come status
+        expect(r.status).toEqual(201);
+        // ritorno il json
+        return r.json();
+    })
+    .then(rjson => {
+        // prendo l'id
+        id = rjson.id
+        // lo visualizzo su terminale
+        console.log(id)
+    })
 });
 
 // test case invalid post con la stessa posizione di guardia e ladro
@@ -48,3 +59,25 @@ test('invalid post bad parameters', () => {
     // mi aspetto di ricevere 400
     .then(r => expect(r.status).toEqual(400));
 });
+
+// test case valid patch
+test('valid patch', () => {
+    expect.assertion(1);
+    return fetch(url+'/games/'+id, {
+        method: 'PATCH',
+            // passo solo il valore del ladro
+            body: JSON.stringify({ladro: -3}),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+    })
+    .then(r => {
+        // mi aspetto di ricevere 200
+        expect(r.status).toEqual(200);
+        return r.json();
+    })
+    .then(rjson => {
+        // visualizzo json su terminale
+        console.log(rjson);
+    })
+})
