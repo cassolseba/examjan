@@ -9,6 +9,13 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// necessario per scrittura
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 // definisco la porta
 const PORT = process.env.PORT || 3000
 
@@ -35,7 +42,7 @@ app.get('/games', (req, res) => {
 // get su games/:id
 app.get('/games/:id', (req, res) => {
     // richiedo la partita con l'id specificato
-    const index = games.findIndex((item) => {return item.id == req.params.id})
+    const index = games.findIndex((item) => {return item.id === req.params.id})
     if(index!=-1) {
         //se è stato trovato lo ritorno
         res.json(games[index])
@@ -69,6 +76,38 @@ app.post('/games', (req, res) => {
         console.log(games);
     } else {
         // se non va a buon fine ritorna 400
+        res.sendStatus(400)
+    }
+})
+
+// funzione patch
+app.patch('/games/:id', (req, res) => {
+    //definisco index
+    const index = games.findIndex((item) => { return item.id===req.params.id})
+    const guardia = req.body.guardia
+    const ladro = req.body.ladro
+    // controllo che index sia valido, se non è già stato catturato il ladro e che uno tra guardia e ladro non sia null
+    if (index!=-1 && games[index].catturato!=true && (guardia!=null || ladro!=null)) {
+        // se guardia non è null ed è nel range
+        if(guardia != null && range(guardia)) {
+            games[index].guardia = guardia
+            // se le posizioni corrispondono setto catturato a true
+            if (games[index].guardia == games[index].ladro) games[index].catturato=true
+            // ritorno la partita
+            res.send(games[index])
+        // se ladro non è null ed è nel range
+        } else if (ladro != null && range(ladro)) {
+            games[index].ladro=ladro
+            // se le posizioni corrispondono setto catturato a true
+            if (games[index].guardia == games[index].ladro) games[index].catturato=true
+            // ritorno la partita
+            res.send(games[index])
+        } else {
+            // non si è verificato nessun caso quindi codice di errore
+            res.sendStatus(400)
+        }
+    } else {
+        // condizione non valida quindi segnalo errore
         res.sendStatus(400)
     }
 })
