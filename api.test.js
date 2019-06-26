@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 
 const url = 'http://localhost:3000';
+const url = ""
 
 var id;
 
