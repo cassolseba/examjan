@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
-const url = 'http://localhost:3000';
-const url = ""
+// const url = 'http://localhost:3000';
+const url = "https://examjan.herokuapp.com"
 
 var id;
 
@@ -63,7 +63,7 @@ test('invalid post bad parameters', () => {
 
 // test case valid patch
 test('valid patch', () => {
-    expect.assertion(1);
+    expect.assertions(1);
     return fetch(url+'/games/'+id, {
         method: 'PATCH',
             // passo solo il valore del ladro
