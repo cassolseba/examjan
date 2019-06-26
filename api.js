@@ -20,6 +20,33 @@ var range = function (a) {
     return (Number.isInteger(a) && a>=-10 && a<= 10)
 }
 
+// get
+app.get('/games', (req, res) => {
+    // controllo che ci siano partite nella pila
+    if(games.length!=0) {
+        // ritorno games in Json
+       res.json(games);
+    } else {
+        // ritorno 404 se non ci sono partite
+        res.sendStatus(404)
+    }
+})
+
+// get su games/:id
+app.get('/games/:id', (req, res) => {
+    // richiedo la partita con l'id specificato
+    const index = games.findIndex((item) => {return item.id == req.params.id})
+    if(index!=-1) {
+        //se è stato trovato lo ritorno
+        res.json(games[index])
+    } else {
+        //se non è stato trovato do errore
+        res.sendStatus(404)
+    }
+})
+
+
+// post
 app.post('/games', (req, res) => {
     const guardia = req.body.guardia
     const ladro = req.body.ladro
